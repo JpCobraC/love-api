@@ -8,6 +8,15 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import google.genai as genai
+import os
+from dotenv import load_dotenv
+
+from webdriver_manager.chrome import ChromeDriverManager
+
+load_dotenv()
+api_key = os.getenv("GEMINI_API_KEY")
+client = genai.Client(api_key=api_key)
 
 # ===== TESTE =====
 MODO_TESTE = False  # True = envia agora, False = usa horário aleatório
@@ -18,29 +27,23 @@ NUMERO = "553599999999"  # Coloque o número com DDD, sem espaços ou traços
 HORARIO_INICIO = "07:00"  # Início da janela aleatória de envio
 HORARIO_FIM = "08:00"  # Fim da janela aleatória de envio
 
-mensagens = [
-    f"Bom dia, minha princesa ❤️ Dormiu bem?",
-    f"Bom diaaa, minha linda. Acordei pensando em você",
-    f"Bom dia, Que seu dia seja leve e abençoado! Te amo",
-    f"Bom dia, princesa 💖",
-    f"Bom dia, linda! Que Jesus abençoe seu dia e te proteja sempre",
-    f"Bom dia, minha vida! ❤️",
-    f"Bom dia, meu amor. Acordei com saudade!",
-    f"Bom dia, minha princesinha. Te amo!",
-    f"Bom dia, minha linda! Tenha um dia incrível",
-    f"Bom dia, amor. Já tô pensando em você!",
-    f"Bom diaaa, coisa linda! 💖",
-    f"Bom dia, linda! Que seu dia seja abençoado",
-    f"Bom dia, meu anjo! Te amo muito",
-    f"Bom dia, meu tudo! ❤️",
-    f"Bom dia, princesa. Dormiu bem? Sonhou comigo? kkkkkk",
-    f"Bom dia, amor. Você é meu primeiro pensamento do dia",
-    f"Bom diaaa! Que seu dia seja leve, igual a você",
-    f"Bom dia, minha vida.",
-    f"Bom dia, gatinha. Já estou com saudade!",
-    f"Bom dia, razão do meu sorriso! 😍",
-    f"Bom dia, linda. Que Deus ilumine cada passo seu"
-]
+# ===== FUNÇÃO GERAR MENSAGEM E HORÁRIO VIA LLM =====
+def gerar_mensagem_e_horario():
+    prompt = "Gere uma mensagem de bom dia carinhosa para minha namorada em português, e sugira um horário aleatório entre 07:00 e 08:00 para enviá-la. Formate sua resposta exatamente como: Horário: HH:MM\nMensagem: [a mensagem]"
+    
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=prompt
+    )
+    content = response.text.strip()
+    
+    lines = content.split('\n')
+    
+    horario_str = lines[0].split(': ')[1]
+    mensagem = lines[1].split(': ')[1]
+    
+    return horario_str, mensagem
+
 # ===== FUNÇÃO HORÁRIO ALEATÓRIO =====
 def gerar_horario():
     agora = datetime.now()
@@ -59,7 +62,7 @@ def gerar_horario():
 
 # ===== CONFIG CHROME (SALVA SESSÃO) =====
 options = Options()
-options.add_argument(r"--user-data-dir=C:\chrome-data")
+options.add_argument("--user-data-dir=/home/jpcob/github/laurai/chrome-data")
 from selenium.webdriver.chrome.service import Service
 
 service = Service(ChromeDriverManager().install())
@@ -85,10 +88,18 @@ while True:
         if horario <= agora:
             horario += timedelta(days=1)
     else:
-        # Modo produção: horário aleatório entre 7h e 8h
-        horario = gerar_horario()
-
-    mensagem = random.choice(mensagens)
+        # Modo produção: usa LLM para gerar horário e mensagem
+        horario_str, mensagem = gerar_mensagem_e_horario()
+        partes = horario_str.split(":")
+        hora = int(partes[0])
+        minuto = int(partes[1])
+        
+        agora = datetime.now()
+        horario = agora.replace(hour=hora, minute=minuto, second=0, microsecond=0)
+        
+        # Se o horário já passou hoje, agenda para amanhã
+        if horario <= agora:
+            horario += timedelta(days=1)
 
     print(f"⏰ Próxima mensagem: {horario.strftime('%H:%M')}")
 
