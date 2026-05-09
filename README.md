@@ -6,8 +6,9 @@ Perfeito para casais: envia recadinhos amorosos gerados por IA enquanto você ai
 
 ## ✨ Funcionalidades
 
-- 🤖 **Mensagens geradas por IA** - Usa Google Gemini para criar mensagens carinhosas únicas
-- 📅 **Horário randomizado por IA** - A IA sugere o horário de envio dentro da janela configurada
+- 🤖 **Mensagens geradas por IA** - Usa Google Gemini para criar mensagens carinhosas únicas com versículos bíblicos
+- 📅 **Horário randomizado por IA** - A IA sugere o horário de envio entre 05:50 e 06:30
+- 🎲 **Toque único aleatório** - Cada mensagem inclui uma referência surpresa (café, sorriso, etc.)
 - 💾 **Sessão persistente** - Mantém você logado via QR Code
 - 🧪 **Modo teste** - Teste imediato ou com horário customizado
 - 🔄 **Loop contínuo** - Roda indefinidamente em background
@@ -58,8 +59,8 @@ Edite `main.py` e ajuste:
 ```python
 # ===== CONFIG =====
 NUMERO = "5535999999"  # Seu número de telefone (com código país)
-HORARIO_INICIO = "07:00"  # Início da janela aleatória de envio
-HORARIO_FIM = "08:00"  # Fim da janela aleatória de envio
+HORARIO_INICIO = "05:50"  # Início da janela aleatória de envio
+HORARIO_FIM = "06:30"  # Fim da janela aleatória de envio
 
 # ===== TESTE =====
 MODO_TESTE = False  # True = envia agora, False = horário aleatório
@@ -71,7 +72,7 @@ HORARIO_TESTE = "00:17"  # HH:MM - usado quando MODO_TESTE = True
 Quando `MODO_TESTE = False`, a IA escolhe um horário aleatório entre `HORARIO_INICIO` e `HORARIO_FIM`.
 
 - Defina `HORARIO_INICIO` e `HORARIO_FIM` no formato `HH:MM`
-- Exemplo: `HORARIO_INICIO = "10:00"` e `HORARIO_FIM = "11:30"`
+- Padrão: `HORARIO_INICIO = "05:50"` e `HORARIO_FIM = "06:30"`
 - O envio ocorrerá em um horário sugerido pela IA dentro dessa janela
 
 Se quiser horário fixo, mantenha `MODO_TESTE = True` e ajuste `HORARIO_TESTE`.
