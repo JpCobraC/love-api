@@ -6,7 +6,7 @@ Perfeito para casais: envia recadinhos amorosos gerados por IA enquanto você ai
 
 ## ✨ Funcionalidades
 
-- 🤖 **Mensagens geradas por IA** - Usa Google Gemini para criar mensagens carinhosas únicas com versículos bíblicos
+- 🤖 **Mensagens geradas por IA** - Usa Google Gemini para criar mensagens carinhosas únicas com versículos bíblicos e alta aleatoriedade
 - 📅 **Horário randomizado por IA** - A IA sugere o horário de envio entre 05:50 e 06:30
 - 🎲 **Toque único aleatório** - Cada mensagem inclui uma referência surpresa (café, sorriso, etc.)
 - 💾 **Sessão persistente** - Mantém você logado via QR Code
