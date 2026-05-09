@@ -24,12 +24,14 @@ HORARIO_TESTE = "00:17"  # HH:MM - usado quando MODO_TESTE = True
 
 # ===== CONFIG =====
 NUMERO = "553599999999"  # Coloque o número com DDD, sem espaços ou traços
-HORARIO_INICIO = "07:00"  # Início da janela aleatória de envio
-HORARIO_FIM = "08:00"  # Fim da janela aleatória de envio
+HORARIO_INICIO = "05:50"  # Início da janela aleatória de envio
+HORARIO_FIM = "06:30"  # Fim da janela aleatória de envio
 
 # ===== FUNÇÃO GERAR MENSAGEM E HORÁRIO VIA LLM =====
 def gerar_mensagem_e_horario():
-    prompt = "Gere uma mensagem de bom dia carinhosa para minha namorada em português, e sugira um horário aleatório entre 07:00 e 08:00 para enviá-la. Formate sua resposta exatamente como: Horário: HH:MM\nMensagem: [a mensagem]"
+    toques_unicos = ["café", "sol", "sorriso", "amor", "dia", "beijo", "abraço", "risada", "olhos", "coração"]
+    toque = random.choice(toques_unicos)
+    prompt = f"Gere uma mensagem de bom dia carinhosa para minha namorada em português com até 20 palavras e com um versículo da bíblia protestante que se relate à gentileza, amor ou beleza, e sugira um horário entre 05:50 e 06:30 para enviá-la, tudo aleatóriamente. Adicione um toque único com referência a '{toque}'. Formate sua resposta exatamente como: Horário: HH:MM\nMensagem: [a mensagem]"
     
     response = client.models.generate_content(
         model="gemini-2.5-flash",
