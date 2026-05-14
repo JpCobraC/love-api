@@ -1,0 +1,27 @@
+{
+  "name": "laurai",
+  "version": "1.0.0",
+  "description": "Um bot automatizado e inteligente feito para garantir que sua namorada acorde todos os dias com uma mensagem de bom dia exclusiva, carinhosa e baseada na Bíblia. O bot utiliza **Selenium** para controlar o WhatsApp Web e a IA **Google Gemini** para redigir os textos.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JpCobraC/love-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/JpCobraC/love-api/issues"
+  },
+  "homepage": "https://github.com/JpCobraC/love-api#readme",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "dotenv": "^17.4.2",
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "^1.34.7"
+  }
+}

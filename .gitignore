@@ -1,6 +1,12 @@
 # Chrome session data
 chrome-data/
 
+# Node.js
+node_modules/
+.wwebjs_auth/
+.wwebjs_cache/
+
+
 # Python
 __pycache__/
 *.py[cod]
