@@ -113,7 +113,8 @@ async function loopOficial() {
         const proximo = gerarProximoHorario();
         const msg = await gerarMensagem();
 
-        console.log(`\n📅 PRÓXIMO ENVIO AGENDADO PARA A PATROA: ${proximo.toLocaleString()}`);
+        console.log(`\n💬 Mensagem gerada pelo Gemini:\n"${msg}"\n`);
+        console.log(`📅 PRÓXIMO ENVIO AGENDADO PARA A PATROA: ${proximo.toLocaleString()}`);
 
         while (new Date() < proximo) {
             const faltaMs = proximo.getTime() - new Date().getTime();
