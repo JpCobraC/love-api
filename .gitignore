@@ -1,6 +1,9 @@
 # Chrome session data
 chrome-data/
 
+# Baileys session data
+baileys_auth/
+
 # Node.js
 node_modules/
 .wwebjs_auth/
