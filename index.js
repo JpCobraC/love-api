@@ -7,9 +7,22 @@ require('dotenv').config();
 // Carrega a chave da IA
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
-
 // ===== CONFIGURAÇÕES =====
 const NUMERO_OFICIAL = '553599999999'; // Número da patroa
+
+// --- Ocultar logs chatos da libsignal (usada pelo Baileys) ---
+const originalWarn = console.warn;
+console.warn = function(...args) {
+    if (typeof args[0] === 'string' && args[0].includes('Closing open session in favor of incoming prekey bundle')) return;
+    originalWarn.apply(console, args);
+};
+
+const originalInfo = console.info;
+console.info = function(...args) {
+    if (typeof args[0] === 'string' && args[0].includes('Closing session:')) return;
+    originalInfo.apply(console, args);
+};
+// -----------------------------------------------------------
 const NUMERO_TESTE = '553599999999'; // Seu número
 const HORARIO_INICIO = '05:50';
 const HORARIO_FIM = '06:30';
