@@ -9,15 +9,15 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
 // ===== CONFIGURAÇÕES =====
-const NUMERO_OFICIAL = '553598798472'; // Número da patroa
-const NUMERO_TESTE   = '553597088134'; // Seu número
+const NUMERO_OFICIAL = '553599999999'; // Número da patroa
+const NUMERO_TESTE = '553599999999'; // Seu número
 const HORARIO_INICIO = '05:50';
-const HORARIO_FIM    = '06:30';
-const AUTH_FOLDER    = './baileys_auth';
+const HORARIO_FIM = '06:30';
+const AUTH_FOLDER = './baileys_auth';
 
 async function gerarMensagem() {
     const toques = ['café', 'sol', 'sorriso', 'amor', 'dia', 'beijo', 'abraço', 'risada', 'olhos', 'coração'];
-    const toque  = toques[Math.floor(Math.random() * toques.length)];
+    const toque = toques[Math.floor(Math.random() * toques.length)];
     const prompt = `Gere uma mensagem de bom dia carinhosa para minha namorada em português com até 20 palavras e com um versículo da bíblia protestante que se relate à gentileza, amor ou beleza. Adicione um toque único com referência a '${toque}'.`;
 
     try {
@@ -38,7 +38,7 @@ function gerarProximoHorario() {
     const [hf, mf] = HORARIO_FIM.split(':').map(Number);
 
     let inicio = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), hi, mi, 0, 0);
-    let fim    = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), hf, mf, 0, 0);
+    let fim = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), hf, mf, 0, 0);
 
     if (agora > fim) {
         inicio.setDate(inicio.getDate() + 1);
@@ -68,41 +68,41 @@ async function iniciarConexaoTemporaria(onOpen) {
         const finalizar = (erro) => {
             if (resolvido) return;
             resolvido = true;
-            try { 
+            try {
                 if (sock.ws) sock.ws.close();
                 if (sock.end) sock.end(undefined);
-            } catch(e) {}
-            
+            } catch (e) { }
+
             if (erro) reject(erro);
             else resolve();
         };
 
         sock.ev.on('connection.update', async (update) => {
             const { connection, lastDisconnect, qr } = update;
-            
+
             if (qr) {
                 console.log('\n📱 Escaneie o QR Code para fazer login:');
                 qrcode.generate(qr, { small: true });
             }
-            
+
             if (connection === 'open') {
                 console.log('✅ WhatsApp conectado com sucesso!');
                 try {
                     await onOpen(sock);
                     // Aguarda 5 segundos para os acks e encerra a conexão para poupar memória
-                    setTimeout(() => finalizar(), 5000); 
+                    setTimeout(() => finalizar(), 5000);
                 } catch (e) {
                     console.error('❌ Erro durante a operação de envio:', e.message);
                     finalizar(e);
                 }
             }
-            
+
             if (connection === 'close') {
                 const statusCode = lastDisconnect?.error?.output?.statusCode;
                 if (statusCode === DisconnectReason.loggedOut) {
                     console.log('🗑️ Sessão expirada (LOGOUT). Removendo pasta de autenticação...');
                     const fs = require('fs');
-                    try { fs.rmSync(AUTH_FOLDER, { recursive: true, force: true }); } catch (_) {}
+                    try { fs.rmSync(AUTH_FOLDER, { recursive: true, force: true }); } catch (_) { }
                     finalizar(new Error('Sessão expirada. Inicie para ler o QR Code novamente.'));
                 } else {
                     finalizar(new Error(`Conexão fechada antes de enviar. Código: ${statusCode}`));
@@ -114,7 +114,7 @@ async function iniciarConexaoTemporaria(onOpen) {
 
 async function loopPrincipal() {
     console.log('\n🤖 INICIANDO LAURAI MODO ECONÔMICO (Conecta offline, poupa RAM)');
-    
+
     // Verificação Inicial: Necessário para testar a sessão existente e garantir que, 
     // se precisar ler QR Code, isso ocorra agora, e não só as 6 da manhã.
     console.log('🔍 Fazendo verificação de sessão inicial...');
@@ -137,11 +137,11 @@ async function loopPrincipal() {
         console.log(`\n📅 PRÓXIMO ENVIO AGENDADO PARA: ${proximoEnvio.toLocaleString()}`);
 
         while (new Date() < proximoEnvio) {
-            const faltaMs  = proximoEnvio.getTime() - new Date().getTime();
-            const horas    = Math.floor(faltaMs / 3600000);
-            const minutos  = Math.floor((faltaMs % 3600000) / 60000);
+            const faltaMs = proximoEnvio.getTime() - new Date().getTime();
+            const horas = Math.floor(faltaMs / 3600000);
+            const minutos = Math.floor((faltaMs % 3600000) / 60000);
             const segundos = Math.floor((faltaMs % 60000) / 1000);
-            process.stdout.write(`\r⏳ Falta ${String(horas).padStart(2,'0')}:${String(minutos).padStart(2,'0')}:${String(segundos).padStart(2,'0')}   `);
+            process.stdout.write(`\r⏳ Falta ${String(horas).padStart(2, '0')}:${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}   `);
             await new Promise(r => setTimeout(r, 30000)); // Dorme verificando a cada 30 segundos
         }
 
@@ -177,9 +177,9 @@ async function loopPrincipal() {
         } else {
             console.log('\n🚨 Todas as 5 tentativas falharam! Desistindo por hoje para evitar span/travamentos.');
         }
-        
+
         // Dorme por 1 hora para evitar qualquer chance de duplicação do envio no dia
-        await new Promise(r => setTimeout(r, 3600000)); 
+        await new Promise(r => setTimeout(r, 3600000));
     }
 }
 
