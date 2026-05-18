@@ -121,6 +121,8 @@ async function loopPrincipal() {
     try {
         console.log('🧠 Gerando mensagem de teste com Gemini...');
         const mensagemTesteIA = await gerarMensagem();
+        console.log(`\n💬 Mensagem de teste gerada:\n"${mensagemTesteIA}"\n`);
+        
         await iniciarConexaoTemporaria(async (sock) => {
             const msgTeste = '🤖 [LAURAI] Bot iniciado! O processo agora dormirá e só conectará ao WhatsApp no momento do envio.\n\n🧠 *Teste de Geração de IA (Gemini):*\n' + mensagemTesteIA;
             await sock.sendMessage(`${NUMERO_TESTE}@s.whatsapp.net`, { text: msgTeste });
