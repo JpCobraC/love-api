@@ -117,12 +117,14 @@ async function loopPrincipal() {
 
     // Verificação Inicial: Necessário para testar a sessão existente e garantir que, 
     // se precisar ler QR Code, isso ocorra agora, e não só as 6 da manhã.
-    console.log('🔍 Fazendo verificação de sessão inicial...');
+    console.log('🔍 Fazendo verificação de sessão inicial e gerando mensagem de teste...');
     try {
+        console.log('🧠 Gerando mensagem de teste com Gemini...');
+        const mensagemTesteIA = await gerarMensagem();
         await iniciarConexaoTemporaria(async (sock) => {
-            const msgTeste = '🤖 [LAURAI] Bot iniciado no modo super econômico! O processo agora dormirá e só conectará ao WhatsApp no momento do envio.';
+            const msgTeste = '🤖 [LAURAI] Bot iniciado! O processo agora dormirá e só conectará ao WhatsApp no momento do envio.\n\n🧠 *Teste de Geração de IA (Gemini):*\n' + mensagemTesteIA;
             await sock.sendMessage(`${NUMERO_TESTE}@s.whatsapp.net`, { text: msgTeste });
-            console.log('✅ Ping inicial enviado com sucesso!');
+            console.log('✅ Ping inicial com mensagem de IA enviado com sucesso!');
         });
         console.log('✅ Verificação concluída. Desconectado com segurança e em standby.');
     } catch (e) {
