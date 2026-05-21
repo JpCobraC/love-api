@@ -5,8 +5,10 @@ const pino = require('pino');
 require('dotenv').config();
 
 // Carrega a chave da IA
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+const hasGemini = Boolean(GEMINI_API_KEY);
 // ===== CONFIGURAÇÕES =====
 const NUMERO_OFICIAL = '553599999999'; // Número da patroa
 
@@ -28,10 +30,27 @@ const HORARIO_INICIO = '05:50';
 const HORARIO_FIM = '06:30';
 const AUTH_FOLDER = './baileys_auth';
 
+function gerarMensagemLocal(toque) {
+    const textos = [
+        `Bom dia, meu amor! Que o dia comece com um sorriso seu e com a bênção do ${toque}.`,
+        `Que hoje o seu coração brilhe como o ${toque} e Deus abençoe cada momento do seu dia.`,
+        `Hoje meu desejo é que o ${toque} ilumine seus passos e que você sinta todo o carinho que tenho por você.`,
+        `Meu amor, que seu dia seja tão doce quanto ${toque} e tão cheio de paz quanto um versículo de amor.`,
+        `Acorde com a certeza de que o ${toque} do nosso amor te acompanha e que Deus cuida de você.`,
+        `Que o ${toque} inspire um dia repleto de carinho, fé e alegria. Te amo mais a cada amanhecer.`,
+    ];
+    return textos[Math.floor(Math.random() * textos.length)];
+}
+
 async function gerarMensagem() {
     const toques = ['café', 'sol', 'sorriso', 'amor', 'dia', 'beijo', 'abraço', 'risada', 'olhos', 'coração'];
     const toque = toques[Math.floor(Math.random() * toques.length)];
     const prompt = `Gere uma mensagem de bom dia carinhosa para minha namorada em português com até 20 palavras e com um versículo da bíblia protestante que se relate à gentileza, amor ou beleza. Adicione um toque único com referência a '${toque}'.`;
+
+    if (!hasGemini) {
+        console.warn('⚠️ GEMINI_API_KEY não configurada. Usando fallback local de mensagem.');
+        return gerarMensagemLocal(toque);
+    }
 
     try {
         const result = await model.generateContent({
@@ -41,7 +60,7 @@ async function gerarMensagem() {
         return result.response.text().trim();
     } catch (err) {
         console.error('❌ Erro no Gemini:', err.message);
-        return 'Bom dia, meu amor! Que seu dia seja iluminado e cheio de bençãos. Te amo! ❤️';
+        return gerarMensagemLocal(toque);
     }
 }
 
@@ -126,28 +145,12 @@ async function iniciarConexaoTemporaria(onOpen) {
 }
 
 async function loopPrincipal() {
-    console.log('\n🤖 INICIANDO LAURAI MODO ECONÔMICO (Conecta offline, poupa RAM)');
+    console.log('\n🤖 INICIANDO LAURAI MODO ECONÔMICO (Gera mensagem no startup e abre WhatsApp apenas ao enviar)');
 
-    // Verificação Inicial: Necessário para testar a sessão existente e garantir que, 
-    // se precisar ler QR Code, isso ocorra agora, e não só as 6 da manhã.
-    console.log('🔍 Fazendo verificação de sessão inicial e gerando mensagem de teste...');
-    try {
-        console.log('🧠 Gerando mensagem de teste com Gemini...');
-        const mensagemTesteIA = await gerarMensagem();
-        console.log(`\n💬 Mensagem de teste gerada:\n"${mensagemTesteIA}"\n`);
-        
-        await iniciarConexaoTemporaria(async (sock) => {
-            const msgTeste = '🤖 [LAURAI] Bot iniciado! O processo agora dormirá e só conectará ao WhatsApp no momento do envio.\n\n🧠 *Teste de Geração de IA (Gemini):*\n' + mensagemTesteIA;
-            await sock.sendMessage(`${NUMERO_TESTE}@s.whatsapp.net`, { text: msgTeste });
-            console.log('✅ Ping inicial com mensagem de IA enviado com sucesso!');
-        });
-        console.log('✅ Verificação concluída. Desconectado com segurança e em standby.');
-    } catch (e) {
-        console.error('❌ Falha na inicialização:', e.message);
-        console.log('Aguardando 10 segundos para tentar novamente (pode ser problema de internet ou QR Code faltando)...');
-        await new Promise(r => setTimeout(r, 10000));
-        return loopPrincipal(); // Recomeça para forçar a leitura do QR ou reconexão
-    }
+    console.log('🧠 Gerando mensagem diária agora e armazenando...');
+    let mensagemDiaria = await gerarMensagem();
+    console.log(`\n💬 Mensagem armazenada:\n"${mensagemDiaria}"\n`);
+    console.log('📌 O WhatsApp será aberto somente no momento do envio.');
 
     while (true) {
         const proximoEnvio = gerarProximoHorario();
@@ -162,10 +165,8 @@ async function loopPrincipal() {
             await new Promise(r => setTimeout(r, 30000)); // Dorme verificando a cada 30 segundos
         }
 
-        console.log('\n🚀 CHEGOU A HORA! Preparando...');
-        console.log('🧠 Gerando mensagem com Gemini...');
-        const mensagemDiaria = await gerarMensagem();
-        console.log(`\n💬 Mensagem gerada:\n"${mensagemDiaria}"\n`);
+        console.log('\n🚀 CHEGOU A HORA! Preparando para enviar a mensagem armazenada...');
+        console.log(`\n💬 Usando a mensagem armazenada:\n"${mensagemDiaria}"\n`);
 
         let enviado = false;
         let tentativas = 0;
@@ -194,6 +195,10 @@ async function loopPrincipal() {
         } else {
             console.log('\n🚨 Todas as 5 tentativas falharam! Desistindo por hoje para evitar span/travamentos.');
         }
+
+        console.log('🧠 Gerando a próxima mensagem para o próximo ciclo...');
+        mensagemDiaria = await gerarMensagem();
+        console.log(`\n💬 Próxima mensagem armazenada:\n"${mensagemDiaria}"\n`);
 
         // Dorme por 1 hora para evitar qualquer chance de duplicação do envio no dia
         await new Promise(r => setTimeout(r, 3600000));
