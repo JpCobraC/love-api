@@ -43,7 +43,7 @@ function gerarMensagemLocal(toque) {
 }
 
 async function gerarMensagem() {
-    const toques = ['café', 'sol', 'sorriso', 'amor', 'dia', 'beijo', 'abraço', 'risada', 'olhos', 'coração'];
+    const toques = ['café', 'sol', 'sorriso', 'amor', 'dia', 'beijo', 'abraço', 'risada', 'olhos', 'coração', 'estrela', 'lua', 'vento', 'flor', 'melodia', 'doce', 'luz', 'calor', 'brisa', 'alegria', 'paz', 'linda', 'maravilhosa', 'radiante', 'incrível', 'especial', 'única', 'maravilhosa', 'luminosa', 'encantadora', 'inspiradora', 'cativante', 'deslumbrante', 'magnífica', 'sublime', 'estonteante'];
     const toque = toques[Math.floor(Math.random() * toques.length)];
     const prompt = `Gere uma mensagem de bom dia carinhosa para minha namorada em português com até 20 palavras e com um versículo da bíblia protestante que se relate à gentileza, amor ou beleza. Adicione um toque único com referência a '${toque}'.`;
 
@@ -145,12 +145,12 @@ async function iniciarConexaoTemporaria(onOpen) {
 }
 
 async function loopPrincipal() {
-    console.log('\n🤖 INICIANDO LAURAI MODO ECONÔMICO (Gera mensagem no startup e abre WhatsApp apenas ao enviar)');
+    console.log('\n🤖 INICIANDO....');
 
-    console.log('🧠 Gerando mensagem diária agora e armazenando...');
+    console.log('🧠 Gerando mensagem e armazenando...');
     let mensagemDiaria = await gerarMensagem();
     console.log(`\n💬 Mensagem armazenada:\n"${mensagemDiaria}"\n`);
-    console.log('📌 O WhatsApp será aberto somente no momento do envio.');
+    console.log('📌 O WhatsApp será aberto no momento do envio.');
 
     while (true) {
         const proximoEnvio = gerarProximoHorario();
@@ -165,8 +165,8 @@ async function loopPrincipal() {
             await new Promise(r => setTimeout(r, 30000)); // Dorme verificando a cada 30 segundos
         }
 
-        console.log('\n🚀 CHEGOU A HORA! Preparando para enviar a mensagem armazenada...');
-        console.log(`\n💬 Usando a mensagem armazenada:\n"${mensagemDiaria}"\n`);
+        console.log('\n🚀 CHEGOU A HORA! Preparando para enviar...');
+        console.log(`\n💬 Usando a mensagem:\n"${mensagemDiaria}"\n`);
 
         let enviado = false;
         let tentativas = 0;
@@ -178,7 +178,7 @@ async function loopPrincipal() {
             try {
                 await iniciarConexaoTemporaria(async (sock) => {
                     await sock.sendMessage(`${NUMERO_OFICIAL}@s.whatsapp.net`, { text: mensagemDiaria });
-                    console.log('✅ MENSAGEM OFICIAL ENVIADA!');
+                    console.log('✅ MENSAGEM ENVIADA!');
                 });
                 enviado = true;
             } catch (err) {
