@@ -6,11 +6,10 @@ Ideal para rodar em dispositivos de baixo consumo (como TV Boxes com Armbian, Ra
 
 ## ✨ Funcionalidades
 
-- 🤖 **Mensagens Únicas com Gemini 2.5** - Gera textos românticos de até 20 palavras com versículos bíblicos sobre amor e gentileza.
-- ⏰ **Janela de Horário Humana** - O bot escolhe um horário aleatório entre **05:50 e 06:30** para enviar a mensagem, evitando padrões robóticos.
-- 🎲 **Toques Personalizados** - A cada dia, a IA insere uma referência aleatória (café, sorriso, abraço, beijo) para variar o conteúdo.
+- 🤖 **Mensagens Únicas com Gemini 2.5** - Gera textos românticos de até 20 palavras com versículos bíblicos.
+- ⏰ **Janela de Horário Humana** - O bot escolhe um horário aleatório personalizavel para enviar a mensagem, evitando padrões robóticos.
+- 🎲 **Toques Personalizados** - A cada dia, a IA insere uma referência aleatória (café, sorriso, abraço, beijo e etc...) para variar o conteúdo.
 - 💾 **Sessão Persistente** - Salva o login na pasta `.wwebjs_auth/`, para que você só precise escanear o QR Code no terminal uma única vez.
-- 🚀 **Disparo de Teste** - Envia um ping para o seu próprio número toda vez que iniciar, confirmando que está online e estabilizado.
 
 ## 📋 Pré-requisitos
 
