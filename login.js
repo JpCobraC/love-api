@@ -42,12 +42,20 @@ async function iniciarLogin() {
 
         if (connection === 'close') {
             const statusCode = lastDisconnect?.error?.output?.statusCode;
+            console.log(`🔌 Conexão fechada. Código de status: ${statusCode}.`);
+            
             if (statusCode === DisconnectReason.loggedOut) {
-                console.log('🗑️ Sessão expirada ou deslogada.');
-                process.exit(1);
-            } else if (statusCode !== undefined) {
-                console.log(`🔌 Conexão fechada. Código de status: ${statusCode}. Tentando reconectar...`);
+                console.log('🗑️ Sessão expirada ou desconfigurada. Limpando pasta de autenticação...');
+                const fs = require('fs');
+                try {
+                    fs.rmSync(AUTH_FOLDER, { recursive: true, force: true });
+                } catch (e) {}
+                console.log('🔄 Reiniciando para gerar um novo QR Code...');
+            } else {
+                console.log('🔄 Tentando reconectar...');
             }
+            
+            setTimeout(() => iniciarLogin(), 2000);
         }
     });
 }
